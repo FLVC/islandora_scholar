@@ -401,7 +401,7 @@ function islandora_scholar_embargo_set_embargo($param, $dsid = NULL, $end = 'ind
         $xacml_changed = TRUE;
       }
 
-      // Testing
+      // Test code to allow embargo-admins access to embargoed objects
       $roles = user_roles(FALSE, 'can embargo any object');
       foreach ($roles as $key => $name) {
         $xacml->viewingRule->addRole($name);
@@ -435,7 +435,7 @@ function islandora_scholar_embargo_set_embargo($param, $dsid = NULL, $end = 'ind
         $xacml->datastreamRule->addUser($user->name);
       }
 
-      // Testing
+      // Test code to allow embargo-admins access to embargoed objects
       $roles = user_roles(FALSE, 'can embargo any object');
       foreach ($roles as $key => $name) {
         $xacml->datastreamRule->addRole($name);
