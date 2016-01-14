@@ -400,6 +400,14 @@ function islandora_scholar_embargo_set_embargo($param, $dsid = NULL, $end = 'ind
         $xacml->viewingRule->addUser($user->name);
         $xacml_changed = TRUE;
       }
+
+      // Testing
+      $roles = user_roles(FALSE, 'can embargo any object');
+      foreach ($roles as $key => $name) {
+        $xacml->viewingRule->addRole($name);
+        $xacml_changed = TRUE;
+      }
+
     }
   }
   else {
@@ -426,6 +434,13 @@ function islandora_scholar_embargo_set_embargo($param, $dsid = NULL, $end = 'ind
       foreach ($users as $user) {
         $xacml->datastreamRule->addUser($user->name);
       }
+
+      // Testing
+      $roles = user_roles(FALSE, 'can embargo any object');
+      foreach ($roles as $key => $name) {
+        $xacml->datastreamRule->addRole($name);
+      }
+
     }
   }
   if ($xacml_changed) {
