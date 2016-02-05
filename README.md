@@ -17,10 +17,18 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Configuration
 
+Set the path for `Sherpa/RoMEO` in Administration » Islandora » Solution pack configuation » Scholar (admin/islandora/solution_pack_config/scholar).
+
+![image](https://cloud.githubusercontent.com/assets/2371345/9771917/750f6e88-570f-11e5-9804-23b561bc1dfa.png)
+
 Islandora 7 has re-defined how we are displaying citations to the user. As such, existing citations should be updated using the provided Drush script. The command creates PDF derivatives for any existing attached PDFs as the Google PDF Viewer has been removed in favor of displaying just the PREVIEW datastream.
 
 This can be done by running: 
 `drush -u 1 islandora-scholar-update-citations`
+
+## Documentation
+
+Further documentation for this module is available at [our wiki](https://wiki.duraspace.org/display/ISLANDORA/Islandora+Scholar).
 
 ## Troubleshooting/Issues
 
@@ -33,11 +41,11 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
-* [Nick Ruest](https://github.com/nruest)
+* [Dan Aitken](https://github.com/qadan)
 
 ## Development
 
-If you would like to contribute to this module, please check out our helpful [Documentation for Developers](https://github.com/Islandora/islandora/wiki#wiki-documentation-for-developers) info, as well as our [Developers](http://islandora.ca/developers) section on the Islandora.ca site.
+If you would like to contribute to this module, please check out [CONTRIBUTING.md](CONTRIBUTING.md). In addition, we have helpful [Documentation for Developers](https://github.com/Islandora/islandora/wiki#wiki-documentation-for-developers) info, as well as our [Developers](http://islandora.ca/developers) section on the [Islandora.ca](http://islandora.ca) site.
 
 ## License
 
