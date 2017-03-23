@@ -487,14 +487,6 @@ function islandora_scholar_embargo_set_embargo($param, $dsid = NULL, $end = 'ind
       foreach ($roles as $role) {
         $xacml->viewingRule->addRole($role);
       }
-
-      // Custom FLVC code to allow embargo_admins to access embargoed objects 
-      $roles = user_roles(FALSE, 'can embargo any object');
-      foreach ($roles as $key => $name) {
-        $xacml->viewingRule->addRole($name);
-        $xacml_changed = TRUE;
-      }
-
     }
   }
   else {
@@ -528,13 +520,6 @@ function islandora_scholar_embargo_set_embargo($param, $dsid = NULL, $end = 'ind
           $xacml->datastreamRule->addRole($role);
         }
       }
-
-      // Custom FLVC code to allow embargo_admins to access embargoed objects 
-      $roles = user_roles(FALSE, 'can embargo any object');
-      foreach ($roles as $key => $name) {
-        $xacml->datastreamRule->addRole($name);
-      }
-
     }
   }
   // If we had to add users, roles or DSIDs, commit the changes and update the
