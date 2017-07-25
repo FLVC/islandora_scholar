@@ -520,7 +520,6 @@ EOQ;
   $current_embargo = format_string($current_embargo, array(
     '!namespace_filter' => !empty($namespace_filter) ? $namespace_filter : '',
   ));
-  drupal_set_message($current_embargo);
   // Use the query.
   $connection = islandora_get_tuque_connection();
   return $connection->repository->ri->sparqlQuery($current_embargo, $limit);
