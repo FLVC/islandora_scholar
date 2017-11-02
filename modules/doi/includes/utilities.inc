@@ -89,7 +89,17 @@ function islandora_doi_transform_to_mods($doi_xml) {
 
   // Create MODS XML.
   $mods = new DOMDocument('1.0');
-  $mods->loadXML('<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink"/>');
+  $mods->loadXML('<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:flvc="info:flvc/manifest/v1"/>');
+
+  // create flvc extension
+  module_load_include('inc', 'islandora', 'includes/utilities');
+  $root_namespace = islandora_get_namespace(variable_get('islandora_repository_pid', 'islandora:root'));
+  $ext = $mods->createElement('extension');
+  $mods->firstChild->appendChild($ext);
+  $flvc = $mods->createElementNS('info:flvc/manifest/v1', 'flvc:flvc');
+  $ext->appendChild($flvc);
+  $own = $mods->createElementNS('info:flvc/manifest/v1', 'flvc:owningInstitution', $root_namespace);
+  $flvc->appendChild($own);
 
   // @todo Implement book support.
 
@@ -438,6 +448,22 @@ function islandora_doi_transform_to_mods($doi_xml) {
                         $doi->appendChild($doi_attribute);
                         $doi_text = $mods->importNode($identifier->firstChild);
                         $doi->appendChild($doi_text);
+                        // create flvc identifier
+                        $iid_date = new DateTime();
+                        $iid_text = 'flvc_' . $root_namespace . '_islandoraimporter_' . str_replace('/','_',$identifier->nodeValue) . '_' . $iid_date->getTimeStamp();
+                        $iid = $mods->createElement('identifier', $iid_text);
+                        $mods->firstChild->appendChild($iid);
+                        $iid_attribute = $mods->createAttribute('type');
+                        $iid_attribute->value = 'IID';
+                        $iid->appendChild($iid_attribute);
+                        $purl_text = 'http://purl.flvc.org/' . $root_namespace . '/' . $iid_text;
+                        $location = $mods->createElement('location');
+                        $mods->firstChild->appendChild($location);
+                        $location_attribute = $mods->createAttribute('displayLabel');
+                        $location_attribute->value = 'purl';
+                        $location->appendChild($location_attribute);
+                        $purl = $mods->createElement('url', $purl_text);
+                        $location->appendChild($purl);
                       }
                       break;
 
