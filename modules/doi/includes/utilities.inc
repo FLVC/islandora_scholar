@@ -94,11 +94,12 @@ function islandora_doi_transform_to_mods($doi_xml) {
   // create flvc extension
   module_load_include('inc', 'islandora', 'includes/utilities');
   $root_namespace = islandora_get_namespace(variable_get('islandora_repository_pid', 'islandora:root'));
+  $owning_inst = strtoupper($root_namespace);
   $ext = $mods->createElement('extension');
   $mods->firstChild->appendChild($ext);
   $flvc = $mods->createElementNS('info:flvc/manifest/v1', 'flvc:flvc');
   $ext->appendChild($flvc);
-  $own = $mods->createElementNS('info:flvc/manifest/v1', 'flvc:owningInstitution', $root_namespace);
+  $own = $mods->createElementNS('info:flvc/manifest/v1', 'flvc:owningInstitution', $owning_inst);
   $flvc->appendChild($own);
 
   // @todo Implement book support.
