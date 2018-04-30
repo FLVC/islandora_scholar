@@ -237,8 +237,16 @@ function islandora_doi_transform_to_mods($doi_xml) {
               foreach ($child->childNodes as $grandchild) {
                 switch ($grandchild->nodeName) {
                   case 'title':
-                    $article_title = $mods->importNode($grandchild, TRUE);
-                    $titleinfo->appendChild($article_title);
+                    //$article_title = $mods->importNode($grandchild, TRUE);
+                    //$titleinfo->appendChild($article_title);
+                    $title_text = $doi_xml->saveXML($grandchild);
+                    $title_text = str_replace('<title>', '', $title_text);
+                    $title_text = str_replace('</title>', '', $title_text);
+                    $title_text = str_replace('<', '&lt;', $title_text);
+                    $title_text = str_replace('>', '&gt;', $title_text);
+                    $title_text = preg_replace('/\s+/', ' ', $title_text);
+                    $titlenode = $mods->createElement('title', $title_text);
+                    $titleinfo->appendChild($titlenode);
                     break;
 
                   case 'subtitle':
