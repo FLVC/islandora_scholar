@@ -238,15 +238,8 @@ function islandora_doi_transform_to_mods($doi_xml) {
                 switch ($grandchild->nodeName) {
                   case 'title':
                     //$article_title = $mods->importNode($grandchild, TRUE);
-                    //$titleinfo->appendChild($article_title);
-                    $title_text = $doi_xml->saveXML($grandchild);
-                    $title_text = str_replace('<title>', '', $title_text);
-                    $title_text = str_replace('</title>', '', $title_text);
-                    $title_text = str_replace('<', '&lt;', $title_text);
-                    $title_text = str_replace('>', '&gt;', $title_text);
-                    $title_text = preg_replace('/\s+/', ' ', $title_text);
-                    $titlenode = $mods->createElement('title', $title_text);
-                    $titleinfo->appendChild($titlenode);
+                    $article_title = islandora_doi_create_mods_node($grandchild, $doi_xml , $mods, $grandchild->nodeName);
+                    $titleinfo->appendChild($article_title);
                     break;
 
                   case 'subtitle':
@@ -616,4 +609,17 @@ function islandora_doi_get_mods($id) {
   else {
     return FALSE;
   }
+}
+
+function islandora_doi_create_mods_node($grandchild, $doi_xml , $mods, $tag) {
+
+  $node_text = $doi_xml->saveXML($grandchild);
+  $node_text = str_replace('<' . $tag . '>', '', $node_text);
+  $node_text = str_replace('</' . $tag . '>', '', $node_text);
+  $node_text = htmlentities($node_text, ENT_QUOTES, 'UTF-8', FALSE);
+  $node_text = preg_replace('/\s+/', ' ', $node_text);
+  $node = $mods->createElement($tag, $node_text);
+
+  return($node);
+
 }
