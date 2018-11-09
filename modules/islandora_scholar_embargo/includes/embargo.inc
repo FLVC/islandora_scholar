@@ -474,7 +474,20 @@ EOQ;
   ));
   $connection = islandora_get_tuque_connection();
   $ri = $connection->repository->ri;
-  return $count ? $ri->countQuery($current_embargo, 'sparql') : $ri->sparqlQuery($current_embargo, 'unlimited', '0');
+
+  $results = $ri->sparqlQuery($current_embargo, 'unlimited', '0');
+  $filtered_results = array();
+  foreach ((array) $results as $result) {
+    $pid = $result['obj']['value'];
+    // if belongs to site, copy to filtered_results
+    if (islandora_scholar_embargo_object_belongs_to_site($pid)) {
+      $filtered_results[] = $result;
+    }
+  }
+
+  // return count of filtered_results, or filtered_results
+  //return $count ? $ri->countQuery($current_embargo, 'sparql') : $ri->sparqlQuery($current_embargo, 'unlimited', '0');
+  return $count ? count($filtered_results) : $filtered_results;
 }
 
 /**
@@ -522,7 +535,19 @@ EOQ;
   ));
   // Use the query.
   $connection = islandora_get_tuque_connection();
-  return $connection->repository->ri->sparqlQuery($current_embargo, $limit);
+
+  $results = $connection->repository->ri->sparqlQuery($current_embargo, $limit);
+  $filtered_results = array();
+  foreach ((array) $results as $result) {
+    $pid = $result['obj']['value'];
+    // if belongs to site, copy to filtered_results
+    if (islandora_scholar_embargo_object_belongs_to_site($pid)) {
+      $filtered_results[] = $result;
+    }
+  }
+
+  //return $connection->repository->ri->sparqlQuery($current_embargo, $limit);
+  return $filtered_results;
 }
 
 /**
@@ -540,6 +565,28 @@ function islandora_scholar_embargo_get_namespace_filters() {
     }
   }
   return '';
+}
+
+function islandora_scholar_embargo_object_belongs_to_site($pid) {
+
+  $root_pid = variable_get('islandora_repository_pid', 'islandora:root');
+  if (islandora_get_namespace($root_pid) == islandora_get_namespace($pid)) {
+    return TRUE;
+  }
+
+  $solr_url = "http://localhost:8080/solr/select/?version=2.2&start=0&rows=10&indent=on&fl=PID&wt=json&fq=site_collection_id_ms%3A" . urlencode(escapeSolrValue("info:fedora/" . $root_pid))  . "&q=PID%3A" . urlencode(escapeSolrValue($pid));
+
+  $results = file_get_contents($solr_url);
+  $solr_results = array();
+  if (isset($results)) {
+    $solr_results = json_decode($results, TRUE);
+    $numfound = $solr_results['response']['numFound'];
+    if ($numfound > 0) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
 }
 
 /**
