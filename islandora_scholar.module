@@ -12,23 +12,32 @@ function islandora_scholar_menu() {
   return array(
     'admin/islandora/solution_pack_config/scholar' => array(
       'title' => 'Scholar',
-      'description' => 'Configure scholar settings such as RoMEO and Google Search',
+      'description' => 'Configure Islandora Scholar settings such as RoMEO and Google Search',
       'type' => MENU_NORMAL_ITEM,
       'page callback' => 'drupal_get_form',
       'page arguments' => array('islandora_scholar_admin_form'),
-      'access arguments' => array('access administration pages'),
+      'access arguments' => array('administer site configuration'),
       'file' => 'includes/admin.form.inc',
     ),
     'admin/islandora/solution_pack_config/scholar/base' => array(
       'title' => 'Basic Configuration',
       'type' => MENU_DEFAULT_LOCAL_TASK,
     ),
+    'admin/islandora/solution_pack_config/scholar/xpaths' => array(
+      'title' => 'XPath Configuration',
+      'description' => 'Configure Islandora Scholar XPaths',
+      'type' => MENU_LOCAL_TASK,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_scholar_admin_xpath_form'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'includes/admin.form.inc',
+    ),
     'admin/islandora/solution_pack_config/scholar/pdf' => array(
       'title' => 'PDF Configuration',
       'type' => MENU_LOCAL_TASK,
       'page callback' => 'drupal_get_form',
       'page arguments' => array('islandora_scholar_admin_pdf_form'),
-      'access arguments' => array('access administration pages'),
+      'access arguments' => array('administer site configuration'),
       'file' => 'includes/admin.form.inc',
     ),
     'islandora/object/%islandora_object/islandora_scholar_romeo' => array(
