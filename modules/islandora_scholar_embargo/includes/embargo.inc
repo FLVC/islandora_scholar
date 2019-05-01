@@ -528,6 +528,10 @@ EOQ;
 }
 ORDER BY ASC(?date) ASC(?obj)
 EOQ;
+  $namespace_filter = islandora_scholar_embargo_get_namespace_filters();
+  $current_embargo = format_string($current_embargo, array(
+    '!namespace_filter' => !empty($namespace_filter) ? $namespace_filter : '',
+  ));
 
   $namespace_filter = islandora_scholar_embargo_get_namespace_filters();
   $current_embargo = format_string($current_embargo, array(
