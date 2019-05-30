@@ -1,6 +1,6 @@
 name = Islandora Scholar Embargo
 description = Support embargo management in Islandora Scholar.
-configure = admin/islandora/solution_pack_config/embargo
+configure = admin/islandora/tools/embargo
 package = Islandora Solution Packs
 dependencies[] = rules
 dependencies[] = islandora
