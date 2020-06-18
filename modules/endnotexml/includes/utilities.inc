@@ -29,6 +29,46 @@ function islandora_endnotexml_transform_to_mods($xml_string) {
   );
 
   $to_return = file_get_contents($mods_file);
+
+  // add FLVC specific fields
+  $mods = new DOMDocument('1.0');
+  $mods->loadXML($to_return);
+
+  // create flvc extension
+  module_load_include('inc', 'islandora', 'includes/utilities');
+  $mods->firstChild->setAttribute('xmlns:flvc', 'info:flvc/manifest/v1');
+  $root_namespace = islandora_get_namespace(variable_get('islandora_repository_pid', 'islandora:root'));
+  $owning_inst = strtoupper($root_namespace);
+  $ext = $mods->createElement('extension');
+  $mods->firstChild->appendChild($ext);
+  $flvc = $mods->createElementNS('info:flvc/manifest/v1', 'flvc:flvc');
+  $ext->appendChild($flvc);
+  $own = $mods->createElementNS('info:flvc/manifest/v1', 'flvc:owningInstitution', $owning_inst);
+  $flvc->appendChild($own);
+
+  // create flvc IID identifier
+  $iid_date = new DateTime();
+  $iid_text = 'flvc_' . $root_namespace . '_endnote_';
+  if ($mods->firstChild->hasAttribute('ID')) {
+    $iid_text .= preg_replace("/[^A-Za-z0-9]/", '', $mods->firstChild->getAttribute('ID')) . '_';
+  }
+  $iid_text .= $iid_date->getTimeStamp();
+  $iid = $mods->createElement('identifier', $iid_text);
+  $mods->firstChild->appendChild($iid);
+  $iid_attribute = $mods->createAttribute('type');
+  $iid_attribute->value = 'IID';
+  $iid->appendChild($iid_attribute);
+
+  // remove genre
+  foreach ($mods->getElementsByTagName('genre') as $genre) {
+    if ($genre->nodeValue == 'journal article') {
+        $genre->parentNode->removeChild($genre);
+    }
+  }
+
+  //drupal_set_message($mods->saveXML());
+  $to_return = $mods->saveXML();
+
   module_load_include('inc', 'islandora', 'includes/utilities');
   $mods_file = islandora_temp_file_entry($mods_file, 'text/xml');
 
